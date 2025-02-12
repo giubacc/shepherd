@@ -316,11 +316,11 @@ Specify the relative directory used by dbms to store its data.
 
 Specify the relative directory used by dbms to mount its directory objects.
 
-### SHPD_ENV_DB_REGISTRY
+### SHPD_DB_REGISTRY
 
 Specify the dbms docker upstream registry.
 
-### SHPD_ENV_DB_TAG
+### SHPD_DB_TAG
 
 Specify the dbms docker image tag.
 
@@ -352,7 +352,7 @@ Specify the Oracle's container database (CDB) name.
 
 Specify the database name.
 
-### SHPD_ENV_DB_NET_LST_PORT_HOST_MAP
+### SHPD_ENV_DB_NET_LST_PORT_HOST
 
 1. Specify the Oracle-host port mapping for the Oracle Net
 Listener Port (1521).
