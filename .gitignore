@@ -15,6 +15,7 @@
 .idea/
 .project
 .classpath
+.vscode
 .c9/
 *.launch
 .settings/
@@ -31,6 +32,7 @@ Thumbs.db
 .devcontainer
 venv
 __pycache__
+.coverage
 
 oradata
 *.dmp
