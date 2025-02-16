@@ -30,6 +30,7 @@ Thumbs.db
 
 .devcontainer
 venv
+__pycache__
 
 oradata
 *.dmp

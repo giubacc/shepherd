@@ -200,6 +200,7 @@ sudo apt install python3 python3-pip python3-venv -y
    Use a virtual environment to isolate dependencies:
 
    ```bash
+   cd src
    python3 -m venv venv
    source venv/bin/activate
    ```
