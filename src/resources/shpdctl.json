@@ -80,40 +80,30 @@
           "ingress": true,
           "tag": "traefik-1",
           "registry": "",
-          "envvars": []
+          "envvars": {}
         },
         {
           "type": "custom-1",
           "tag": "primary",
-          "envvars": [],
-          "ports": [],
-          "properties": [
-            {
-              "instance.name": "primary"
-            },
-            {
-              "instance.id": 1
-            }
-          ]
+          "envvars": {},
+          "ports": {},
+          "properties": {
+            "instance.name": "primary",
+            "instance.id": 1
+          }
         },
         {
           "type": "nodejs",
           "tag": "poke",
           "registry": "",
           "subject_alternative_name": "DNS:poke-${ingress_ip}.${domain}",
-          "ports": [
-            {
-              "http": "3000:3000"
-            }
-          ],
-          "envvars": [
-            {
-              "USER": "user"
-            },
-            {
-              "PSW": "psw"
-            }
-          ]
+          "ports": {
+            "http": "3000:3000"
+          },
+          "envvars": {
+            "USER": "user",
+            "PSW": "psw"
+          }
         }
       ],
       "archived": false,

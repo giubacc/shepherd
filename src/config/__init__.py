@@ -29,10 +29,10 @@ from .config import (
     Environment,
     OracleConfig,
     PostgresConfig,
-    Property,
     Service,
     ShpdRegistry,
     Upstream,
+    parse_config,
 )
 
 __all__ = [
@@ -45,7 +45,7 @@ __all__ = [
     "OracleConfig",
     "PostgresConfig",
     "Service",
-    "Property",
     "ShpdRegistry",
     "Upstream",
+    "parse_config",
 ]
