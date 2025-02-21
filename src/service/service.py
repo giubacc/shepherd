@@ -20,32 +20,32 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .config import (
-    CAConfig,
-    CertConfig,
-    Config,
-    Database,
-    DbDefault,
-    Environment,
-    OracleConfig,
-    PostgresConfig,
-    Property,
-    Service,
-    ShpdRegistry,
-    Upstream,
-)
 
-__all__ = [
-    "CAConfig",
-    "CertConfig",
-    "Config",
-    "Database",
-    "DbDefault",
-    "Environment",
-    "OracleConfig",
-    "PostgresConfig",
-    "Service",
-    "Property",
-    "ShpdRegistry",
-    "Upstream",
-]
+class Service:
+    def build_service_image(self, service_type: str) -> None:
+        """Stub for building a service image."""
+        pass
+
+    def bootstrap_service(self, service_type: str) -> None:
+        """Stub for bootstrapping a service."""
+        pass
+
+    def start_service(self, service_type: str) -> None:
+        """Stub for starting a service."""
+        pass
+
+    def stop_service(self, service_type: str) -> None:
+        """Stub for stopping a service."""
+        pass
+
+    def reload_service(self, service_type: str) -> None:
+        """Stub for reloading a service."""
+        pass
+
+    def show_service_stdout(self, service_id: str) -> None:
+        """Stub for showing service stdout."""
+        pass
+
+    def get_service_shell(self, service_id: str) -> None:
+        """Stub for getting a shell session for a service."""
+        pass

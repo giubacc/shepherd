@@ -22,8 +22,14 @@
 
 import click
 
-# Importing the modules from the `modules/` directory
-from modules import db_module, env_module, svc_module
+from database.database import Database
+from environment.environment import Environment
+from service.service import Service
+
+# Initialize instances
+database = Database()
+environment = Environment()
+service = Service()
 
 
 @click.group()
@@ -71,198 +77,173 @@ def cli(
     pass
 
 
-# Database commands
-@cli.group()
-def db():
+@click.group()
+def db() -> None:
     """Database related operations."""
     pass
 
 
-@db.command()
-def build_dbms():
+@db.command(name="build")
+def build_dbms() -> None:
     """Build dbms image."""
-    db_module.build_dbms_image()
+    database.build_dbms_image()
 
 
-@db.command()
-def bootstrap():
+@db.command(name="bootstrap")
+def bootstrap() -> None:
     """Bootstrap dbms service."""
-    db_module.bootstrap_dbms_service()
+    database.bootstrap_dbms_service()
 
 
-@db.command()
-def up():
+@db.command(name="start")
+def up() -> None:
     """Start dbms service."""
-    db_module.start_dbms_service()
+    database.start_dbms_service()
 
 
-@db.command()
-def halt():
+@db.command(name="halt")
+def halt() -> None:
     """Halt dbms service."""
-    db_module.halt_dbms_service()
+    database.halt_dbms_service()
 
 
-@db.command()
-def stdout():
+@db.command(name="stdout")
+def stdout() -> None:
     """Show dbms service stdout."""
-    db_module.show_dbms_stdout()
+    database.show_dbms_stdout()
 
 
-@db.command()
-def shell():
+@db.command(name="shell")
+def shell() -> None:
     """Get a shell session for the dbms service."""
-    db_module.get_dbms_shell()
+    database.get_dbms_shell_session()
 
 
-@db.command()
-def sql_shell():
+@db.command(name="sql")
+def sql_shell() -> None:
     """Get a SQL session for the dbms service."""
-    db_module.get_sql_shell()
-
-
-@db.command()
-@click.argument("user")
-@click.argument("psw")
-def create_user(user, psw):
-    """Create a new user in the database."""
-    db_module.create_user(user, psw)
-
-
-@db.command()
-@click.argument("user")
-@click.argument("directory_name")
-def create_dir(user, directory_name):
-    """Create a new directory object in the database."""
-    db_module.create_directory(user, directory_name)
-
-
-@db.command()
-@click.argument("user")
-def drop_user(user):
-    """Drop an existing user in the database."""
-    db_module.drop_user(user)
+    database.get_sql_shell_session()
 
 
 # Environment commands
-@cli.group()
-def env():
+@click.group()
+def env() -> None:
     """Environment related operations."""
     pass
 
 
-@env.command()
+@env.command(name="init")
 @click.argument("db_type")
 @click.argument("env_tag")
-def init(db_type, env_tag):
+def init_environment(db_type: str, env_tag: str) -> None:
     """Init an environment with a dbms type and an environment's tag name."""
-    env_module.init_environment(db_type, env_tag)
+    environment.init_environment(db_type, env_tag)
 
 
-@env.command()
+@env.command(name="clone")
 @click.argument("src_env_tag")
 @click.argument("dst_env_tag")
-def clone(src_env_tag, dst_env_tag):
+def clone_environment(src_env_tag: str, dst_env_tag: str) -> None:
     """Clone an environment."""
-    env_module.clone_environment(src_env_tag, dst_env_tag)
+    environment.clone_environment(src_env_tag, dst_env_tag)
 
 
-@env.command()
+@env.command(name="checkout")
 @click.argument("env_tag")
-def checkout(env_tag):
+def checkout_environment(env_tag: str) -> None:
     """Checkout an environment."""
-    env_module.checkout_environment(env_tag)
+    environment.checkout_environment(env_tag)
 
 
-@env.command()
-def noactive():
+@env.command(name="noactive")
+def set_noactive() -> None:
     """Set all environments as non-active."""
-    env_module.set_all_non_active()
+    environment.set_all_non_active()
 
 
-@env.command()
-def list():
+@env.command(name="list")
+def list_environments() -> None:
     """List all available environments."""
-    env_module.list_environments()
+    environment.list_environments()
 
 
-@env.command()
-def up():
+@env.command(name="start")
+def start_environment() -> None:
     """Start environment."""
-    env_module.start_environment()
+    environment.start_environment()
 
 
-@env.command()
-def halt():
+@env.command(name="halt")
+def halt_environment() -> None:
     """Halt environment."""
-    env_module.halt_environment()
+    environment.halt_environment()
 
 
-@env.command()
-def reload():
+@env.command(name="reload")
+def reload_environment() -> None:
     """Reload environment."""
-    env_module.reload_environment()
+    environment.reload_environment()
 
 
-@env.command()
-def status():
+@env.command(name="status")
+def environment_status() -> None:
     """Print environment's status."""
-    env_module.environment_status()
+    environment.environment_status()
 
 
-# Service commands
-@cli.group()
-def svc():
+@click.group()
+def svc() -> None:
     """Service related operations."""
     pass
 
 
-@svc.command()
-@click.argument("service_type")
-def build_svc(service_type):
+@svc.command(name="build")
+@click.argument("service_type", type=str)
+def build_service(service_type: str) -> None:
     """Build service image."""
-    svc_module.build_service_image(service_type)
+    service.build_service_image(service_type)
 
 
-@svc.command()
-@click.argument("service_type")
-def bootstrap(service_type):
+@svc.command(name="bootstrap")
+@click.argument("service_type", type=str)
+def bootstrap_service(service_type: str) -> None:
     """Bootstrap service."""
-    svc_module.bootstrap_service(service_type)
+    service.bootstrap_service(service_type)
 
 
-@svc.command()
-@click.argument("service_type")
-def up(service_type):
+@svc.command(name="start")
+@click.argument("service_type", type=str)
+def start_service(service_type: str) -> None:
     """Start service."""
-    svc_module.start_service(service_type)
+    service.start_service(service_type)
 
 
-@svc.command()
-@click.argument("service_type")
-def halt(service_type):
+@svc.command(name="halt")
+@click.argument("service_type", type=str)
+def stop_service(service_type: str) -> None:
     """Stop service."""
-    svc_module.stop_service(service_type)
+    service.stop_service(service_type)
 
 
-@svc.command()
-@click.argument("service_type")
-def reload(service_type):
+@svc.command(name="reload")
+@click.argument("service_type", type=str)
+def reload_service(service_type: str) -> None:
     """Reload service."""
-    svc_module.reload_service(service_type)
+    service.reload_service(service_type)
 
 
-@svc.command()
-@click.argument("service_id")
-def stdout(service_id):
+@svc.command(name="stdout")
+@click.argument("service_id", type=str)
+def service_stdout(service_id: str) -> None:
     """Show service stdout."""
-    svc_module.show_service_stdout(service_id)
+    service.show_service_stdout(service_id)
 
 
-@svc.command()
-@click.argument("service_id")
-def shell(service_id):
+@svc.command(name="shell")
+@click.argument("service_id", type=str)
+def service_shell(service_id: str) -> None:
     """Get a shell session for the service."""
-    svc_module.get_service_shell(service_id)
+    service.get_service_shell(service_id)
 
 
 if __name__ == "__main__":

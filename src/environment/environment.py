@@ -20,32 +20,40 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .config import (
-    CAConfig,
-    CertConfig,
-    Config,
-    Database,
-    DbDefault,
-    Environment,
-    OracleConfig,
-    PostgresConfig,
-    Property,
-    Service,
-    ShpdRegistry,
-    Upstream,
-)
 
-__all__ = [
-    "CAConfig",
-    "CertConfig",
-    "Config",
-    "Database",
-    "DbDefault",
-    "Environment",
-    "OracleConfig",
-    "PostgresConfig",
-    "Service",
-    "Property",
-    "ShpdRegistry",
-    "Upstream",
-]
+class Environment:
+    def init_environment(self, db_type: str, env_tag: str) -> None:
+        """Stub for initializing an environment."""
+        pass
+
+    def clone_environment(self, src_env_tag: str, dst_env_tag: str) -> None:
+        """Stub for cloning an environment."""
+        pass
+
+    def checkout_environment(self, env_tag: str) -> None:
+        """Stub for checking out an environment."""
+        pass
+
+    def set_all_non_active(self) -> None:
+        """Stub for setting all environments as non-active."""
+        pass
+
+    def list_environments(self) -> None:
+        """Stub for listing all available environments."""
+        pass
+
+    def start_environment(self) -> None:
+        """Stub for starting an environment."""
+        pass
+
+    def halt_environment(self) -> None:
+        """Stub for halting an environment."""
+        pass
+
+    def reload_environment(self) -> None:
+        """Stub for reloading an environment."""
+        pass
+
+    def environment_status(self) -> None:
+        """Stub for getting environment status."""
+        pass

@@ -1,53 +1,53 @@
 {
   "ora": {
-    "registry": "${SHPD_DB_ORA_REGISTRY}",
-    "empty_env": "${SHPD_DB_ORA_EMPTY_ENV}",
-    "pump_dir_name": "${SHPD_DB_ORA_PUMP_DIR}",
-    "root_db_name": "${SHPD_DB_ORA_ROOT_NAME}",
-    "plug_db_name": "${SHPD_DB_ORA_PLUG_NAME}",
-    "net_listener_port": "${SHPD_DB_ORA_LISTENER_PORT}"
+    "registry": "${ora_registry}",
+    "empty_env": "${ora_empty_env}",
+    "pump_dir_name": "${ora_pump_dir}",
+    "root_db_name": "${ora_root_db_name}",
+    "plug_db_name": "${ora_plug_db_name}",
+    "net_listener_port": "${ora_listener_port}"
   },
   "pg": {
-    "registry": "${SHPD_DB_PG_REGISTRY}",
-    "empty_env": "${SHPD_DB_PG_EMPTY_ENV}",
-    "net_listener_port": "${SHPD_DB_PG_LISTENER_PORT}"
+    "registry": "${pg_registry}",
+    "empty_env": "${pg_empty_env}",
+    "net_listener_port": "${pg_listener_port}"
   },
   "shpd_registry": {
-    "ftp_server": "${SHPD_REGISTRY}",
-    "ftp_user": "${SHPD_REGISTRY_FTP_USR}",
-    "ftp_psw": "${SHPD_REGISTRY_FTP_PSW}",
-    "ftp_shpd_path": "${SHPD_REGISTRY_FTP_SHPD_PATH}",
-    "ftp_env_imgs_path": "${SHPD_REGISTRY_FTP_IMGS_PATH}"
+    "ftp_server": "${shpd_registry}",
+    "ftp_user": "${shpd_registry_ftp_usr}",
+    "ftp_psw": "${shpd_registry_ftp_psw}",
+    "ftp_shpd_path": "${shpd_registry_ftp_shpd_path}",
+    "ftp_env_imgs_path": "${shpd_registry_ftp_imgs_path}"
   },
-  "host_inet_ip": "${SHPD_HOST_INET_IP}",
-  "domain": "${SHPD_DOMAIN}",
-  "dns_type": "${SHPD_DNS_TYPE}",
+  "host_inet_ip": "${host_inet_ip}",
+  "domain": "${domain}",
+  "dns_type": "${dns_type}",
   "ca": {
-    "country": "${SHPD_CA_COUNTRY}",
-    "state": "${SHPD_CA_STATE}",
-    "locality": "${SHPD_CA_LOCALITY}",
-    "organization": "${SHPD_CA_ORG}",
-    "organizational_unit": "${SHPD_CA_ORG_UNIT}",
-    "common_name": "${SHPD_CA_CN}",
-    "email": "${SHPD_CA_EMAIL}",
-    "passphrase": "${SHPD_CA_PASSPHRASE}"
+    "country": "${ca_country}",
+    "state": "${ca_state}",
+    "locality": "${ca_locality}",
+    "organization": "${ca_org}",
+    "organizational_unit": "${ca_org_unit}",
+    "common_name": "${ca_cn}",
+    "email": "${ca_email}",
+    "passphrase": "${ca_passphrase}"
   },
   "cert": {
-    "country": "${SHPD_CERT_COUNTRY}",
-    "state": "${SHPD_CERT_STATE}",
-    "locality": "${SHPD_CERT_LOCALITY}",
-    "organization": "${SHPD_CERT_ORG}",
-    "organizational_unit": "${SHPD_CERT_ORG_UNIT}",
-    "common_name": "${SHPD_CERT_CN}",
-    "email": "${SHPD_CERT_EMAIL}",
+    "country": "${cert_country}",
+    "state": "${cert_state}",
+    "locality": "${cert_locality}",
+    "organization": "${cert_org}",
+    "organizational_unit": "${cert_org_unit}",
+    "common_name": "${cert_cn}",
+    "email": "${cert_email}",
     "subject_alternative_names": []
   },
-  "envs_dir": "${SHPD_ENV_BASE_DIR}",
+  "envs_dir": "${env_base_dir}",
   "db_default": {
-    "sys_user": "${SHPD_DB_SYS_USR}",
-    "sys_psw": "${SHPD_DB_SYS_PSW}",
-    "user": "${SHPD_DB_USR}",
-    "psw": "${SHPD_DB_PSW}"
+    "sys_user": "${db_sys_usr}",
+    "sys_psw": "${db_sys_psw}",
+    "user": "${db_usr}",
+    "psw": "${db_psw}"
   },
   "envs": [
     {
