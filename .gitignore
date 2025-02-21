@@ -34,6 +34,10 @@ venv
 __pycache__
 .coverage
 
+# Coverage reports
+coverage.xml
+htmlcov/
+
 oradata
 *.dmp
 *.log

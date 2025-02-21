@@ -2,31 +2,27 @@
 
 ![Lint](https://github.com/LunaticFringers/shepherd/actions/workflows/lint.yaml/badge.svg)
 
-Shepherd implements an orchestrator tool capable of quickly provisioning
-fully operational  development platforms using **Docker**.
+Shepherd implements an orchestrator tool useful for provision development
+platforms using **Docker**.
 
 > **Note:** Should a bug be found and not expected to be related with
 > [known issues][issues], one should feel encouraged to file a new issue.
 
 ## Key Concepts
 
-**Shepherd** utilizes two types of images,
-each serving distinct and complementary purposes:
+**Shepherd** utilizes two types of images:
 
 1. **Docker Images**
 2. **Environment Images**
 
 ### Docker Images
 
-Docker images are stateless by design, functioning much like executables
-that can be deployed consistently across any environment platform.
-They encapsulate the application and its dependencies but do not include
-any runtime data, making them versatile and reusable in various contexts.
+Classic stateless images containing executables.
 
 ### Environment Images
 
-Environment images, on the other hand, capture a snapshot of a specific
-reference platform at a given point in time.
+Environment images capture a snapshot of a specific reference platform
+at a given point in time.
 These images are more comprehensive, including:
 
 - **Database State**: The complete state of the database is embedded within
@@ -44,22 +40,6 @@ Once an environment image is pulled and imported into shepherd,
 the corresponding environment state will evolve privately.
 
 ## Requirements
-
-To ensure optimal performance and efficiency when working with shepherd
-and managing multiple environments, certain hardware specifications
-are recommended:
-
-### Hardware
-
-- **Memory**: A modern machine equipped with at least **32 GB of RAM**.
-  This amount of memory is essential for running resource-intensive
-  services like databases and for handling multiple containers simultaneously
-  without performance degradation.
-
-- **Storage**: A **large-capacity disk** is highly recommended,
-  especially if you plan to store multiple environments locally.
-  Each environment's database snapshot can consume significant
-  storage space.
 
 ### OS & System Services
 
@@ -112,6 +92,7 @@ Once installed, query the environment registry for available images:
 
 ```text
 $ shpdctl reg list
+
 Environment        Size
 -----------        ----
 Env-Tag-1          7.22    (G)
@@ -158,15 +139,12 @@ and options of [shpdctl].
 
 ## Database Service's Documentation
 
-The database is provided as a containerized service with the status persisted
-on an host's path.
-
 Refer to the specific documentation for currently supported database services:
 
 1. [Oracle]
 2. Postgres
 
-## Contributing
+## Developer Instructions
 
 See our [development instructions][development].
 
