@@ -23,6 +23,7 @@
 from dataclasses import dataclass, field
 from typing import List, Optional
 
+
 @dataclass
 class Upstream:
     tag: str
@@ -36,6 +37,7 @@ class Upstream:
     dump_dir: str
     enabled: bool
 
+
 @dataclass
 class Database:
     type: str
@@ -46,19 +48,23 @@ class Database:
     psw: str
     upstreams: List[Upstream] = field(default_factory=list)
 
+
 @dataclass
 class ServiceProperty:
     key: str = ""
     value: str = ""
 
+
 @dataclass
 class ServicePort:
     http: str = ""
+
 
 @dataclass
 class ServiceEnvVar:
     key: str
     value: str
+
 
 @dataclass
 class Service:
@@ -71,6 +77,7 @@ class Service:
     properties: List[ServiceProperty] = field(default_factory=list)
     subject_alternative_name: Optional[str] = None
 
+
 @dataclass
 class Environment:
     tag: str
@@ -78,6 +85,7 @@ class Environment:
     services: List[Service]
     archived: bool
     active: bool
+
 
 @dataclass
 class OracleConfig:
@@ -88,11 +96,13 @@ class OracleConfig:
     plug_db_name: str
     net_listener_port: str
 
+
 @dataclass
 class PostgresConfig:
     registry: str
     empty_env: str
     net_listener_port: str
+
 
 @dataclass
 class ShpdRegistry:
@@ -101,6 +111,7 @@ class ShpdRegistry:
     ftp_psw: str
     ftp_shpd_path: str
     ftp_env_imgs_path: str
+
 
 @dataclass
 class CAConfig:
@@ -113,6 +124,7 @@ class CAConfig:
     email: str
     passphrase: str
 
+
 @dataclass
 class CertConfig:
     country: str
@@ -124,12 +136,14 @@ class CertConfig:
     email: str
     subject_alternative_names: List[str] = field(default_factory=list)
 
+
 @dataclass
 class DbDefault:
     sys_user: str
     sys_psw: str
     user: str
     psw: str
+
 
 @dataclass
 class Config:

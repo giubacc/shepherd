@@ -21,18 +21,18 @@
 # SOFTWARE.
 
 from .config import (
-    Config,
-    OracleConfig,
-    PostgresConfig,
-    ShpdRegistry,
     CAConfig,
     CertConfig,
+    Config,
+    Database,
     DbDefault,
     Environment,
-    Database,
-    Upstream,
+    OracleConfig,
+    PostgresConfig,
     Service,
-    ServiceProperty,
-    ServicePort,
     ServiceEnvVar,
+    ServicePort,
+    ServiceProperty,
+    ShpdRegistry,
+    Upstream,
 )
