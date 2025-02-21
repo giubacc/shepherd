@@ -20,8 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import json
 from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import Any, List, Optional
 
 
 @dataclass
@@ -50,20 +51,9 @@ class Database:
 
 
 @dataclass
-class ServiceProperty:
+class Property:
     key: str = ""
     value: str = ""
-
-
-@dataclass
-class ServicePort:
-    http: str = ""
-
-
-@dataclass
-class ServiceEnvVar:
-    key: str
-    value: str
 
 
 @dataclass
@@ -72,9 +62,9 @@ class Service:
     tag: str
     registry: str
     ingress: Optional[bool] = None
-    envvars: List[ServiceEnvVar] = field(default_factory=list)
-    ports: List[ServicePort] = field(default_factory=list)
-    properties: List[ServiceProperty] = field(default_factory=list)
+    envvars: List[Property] = field(default_factory=list)
+    ports: List[Property] = field(default_factory=list)
+    properties: List[Property] = field(default_factory=list)
     subject_alternative_name: Optional[str] = None
 
 
@@ -158,3 +148,139 @@ class Config:
     envs_dir: str
     db_default: DbDefault
     envs: List[Environment] = field(default_factory=list)
+
+
+def parse_config(json_str: str) -> Config:
+    data = json.loads(json_str)
+
+    def parse_upstream(item: Any) -> Upstream:
+        return Upstream(
+            tag=item["tag"],
+            type=item["type"],
+            user=item["user"],
+            psw=item["psw"],
+            host=item["host"],
+            port=item["port"],
+            database=item["database"],
+            unix_user=item["unix_user"],
+            dump_dir=item["dump_dir"],
+            enabled=item["enabled"],
+        )
+
+    def parse_database(item: Any) -> Database:
+        return Database(
+            type=item["type"],
+            registry=item["registry"],
+            sys_user=item["sys_user"],
+            sys_psw=item["sys_psw"],
+            user=item["user"],
+            psw=item["psw"],
+            upstreams=[
+                parse_upstream(upstream) for upstream in item["upstreams"]
+            ],
+        )
+
+    def parse_service_envvar(item: Any) -> Property:
+        return Property(key=item["key"], value=item["value"])
+
+    def parse_service_port(item: Any) -> Property:
+        return Property(key=item["key"], value=item["value"])
+
+    def parse_property(item: Any) -> Property:
+        return Property(key=item["key"], value=item["value"])
+
+    def parse_service(item: Any) -> Service:
+        return Service(
+            type=item["type"],
+            tag=item["tag"],
+            registry=item["registry"],
+            ingress=item.get("ingress"),
+            envvars=[
+                parse_service_envvar(envvar) for envvar in item["envvars"]
+            ],
+            ports=[parse_service_port(port) for port in item["ports"]],
+            properties=[parse_property(prop) for prop in item["properties"]],
+            subject_alternative_name=item.get("subject_alternative_name"),
+        )
+
+    def parse_environment(item: Any) -> Environment:
+        return Environment(
+            tag=item["tag"],
+            db=parse_database(item["db"]),
+            services=[parse_service(service) for service in item["services"]],
+            archived=item["archived"],
+            active=item["active"],
+        )
+
+    def parse_oracle_config(item: Any) -> OracleConfig:
+        return OracleConfig(
+            registry=item["registry"],
+            empty_env=item["empty_env"],
+            pump_dir_name=item["pump_dir_name"],
+            root_db_name=item["root_db_name"],
+            plug_db_name=item["plug_db_name"],
+            net_listener_port=item["net_listener_port"],
+        )
+
+    def parse_postgres_config(item: Any) -> PostgresConfig:
+        return PostgresConfig(
+            registry=item["registry"],
+            empty_env=item["empty_env"],
+            net_listener_port=item["net_listener_port"],
+        )
+
+    def parse_shpd_registry(item: Any) -> ShpdRegistry:
+        return ShpdRegistry(
+            ftp_server=item["ftp_server"],
+            ftp_user=item["ftp_user"],
+            ftp_psw=item["ftp_psw"],
+            ftp_shpd_path=item["ftp_shpd_path"],
+            ftp_env_imgs_path=item["ftp_env_imgs_path"],
+        )
+
+    def parse_ca_config(item: Any) -> CAConfig:
+        return CAConfig(
+            country=item["country"],
+            state=item["state"],
+            locality=item["locality"],
+            organization=item["organization"],
+            organizational_unit=item["organizational_unit"],
+            common_name=item["common_name"],
+            email=item["email"],
+            passphrase=item["passphrase"],
+        )
+
+    def parse_cert_config(item: Any) -> CertConfig:
+        return CertConfig(
+            country=item["country"],
+            state=item["state"],
+            locality=item["locality"],
+            organization=item["organization"],
+            organizational_unit=item["organizational_unit"],
+            common_name=item["common_name"],
+            email=item["email"],
+            subject_alternative_names=item.get("subject_alternative_names", []),
+        )
+
+    def parse_db_default(item: Any) -> DbDefault:
+        return DbDefault(
+            sys_user=item["sys_user"],
+            sys_psw=item["sys_psw"],
+            user=item["user"],
+            psw=item["psw"],
+        )
+
+    # Parsing the Config instance
+    return Config(
+        ora=parse_oracle_config(data["ora"]),
+        pg=parse_postgres_config(data["pg"]),
+        shpd_registry=parse_shpd_registry(data["shpd_registry"]),
+        host_inet_ip=data["host_inet_ip"],
+        domain=data["domain"],
+        dns_type=data["dns_type"],
+        ca=parse_ca_config(data["ca"]),
+        cert=parse_cert_config(data["cert"]),
+        envs_dir=data["envs_dir"],
+        db_default=parse_db_default(data["db_default"]),
+        envs=[parse_environment(env) for env in data["envs"]],
+    )

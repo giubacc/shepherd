@@ -20,32 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .config import (
-    CAConfig,
-    CertConfig,
-    Config,
-    Database,
-    DbDefault,
-    Environment,
-    OracleConfig,
-    PostgresConfig,
-    Property,
-    Service,
-    ShpdRegistry,
-    Upstream,
-)
+from .util import Util
 
-__all__ = [
-    "CAConfig",
-    "CertConfig",
-    "Config",
-    "Database",
-    "DbDefault",
-    "Environment",
-    "OracleConfig",
-    "PostgresConfig",
-    "Service",
-    "Property",
-    "ShpdRegistry",
-    "Upstream",
-]
+__all__ = ["Util"]
