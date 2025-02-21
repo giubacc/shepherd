@@ -51,20 +51,14 @@ class Database:
 
 
 @dataclass
-class Property:
-    key: str = ""
-    value: str = ""
-
-
-@dataclass
 class Service:
     type: str
     tag: str
     registry: str
     ingress: Optional[bool] = None
-    envvars: List[Property] = field(default_factory=list)
-    ports: List[Property] = field(default_factory=list)
-    properties: List[Property] = field(default_factory=list)
+    envvars: Optional[dict[str, str]] = field(default_factory=dict)
+    ports: Optional[dict[str, str]] = field(default_factory=dict)
+    properties: Optional[dict[str, str]] = field(default_factory=dict)
     subject_alternative_name: Optional[str] = None
 
 
@@ -180,26 +174,15 @@ def parse_config(json_str: str) -> Config:
             ],
         )
 
-    def parse_service_envvar(item: Any) -> Property:
-        return Property(key=item["key"], value=item["value"])
-
-    def parse_service_port(item: Any) -> Property:
-        return Property(key=item["key"], value=item["value"])
-
-    def parse_property(item: Any) -> Property:
-        return Property(key=item["key"], value=item["value"])
-
     def parse_service(item: Any) -> Service:
         return Service(
             type=item["type"],
             tag=item["tag"],
             registry=item["registry"],
             ingress=item.get("ingress"),
-            envvars=[
-                parse_service_envvar(envvar) for envvar in item["envvars"]
-            ],
-            ports=[parse_service_port(port) for port in item["ports"]],
-            properties=[parse_property(prop) for prop in item["properties"]],
+            envvars=item.get("envvars", {}),
+            ports=item.get("ports", {}),
+            properties=item.get("properties", {}),
             subject_alternative_name=item.get("subject_alternative_name"),
         )
 

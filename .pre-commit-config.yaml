@@ -45,3 +45,9 @@ repos:
       - id: isort
         args: ["--sp", "src/pyproject.toml", "--check-only"]
         files: ".*\\.py$"
+
+  - repo: https://github.com/RobertCraigie/pyright-python
+    rev: v1.1.394
+    hooks:
+      - id: pyright
+        args: ["--project", "src/pyproject.toml"]
