@@ -33,9 +33,8 @@ Thumbs.db
 venv
 __pycache__
 .coverage
-
-# Coverage reports
 coverage.xml
+.pytest_cache
 htmlcov/
 
 oradata

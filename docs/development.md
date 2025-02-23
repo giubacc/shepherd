@@ -32,9 +32,8 @@ sudo apt install python3 python3-pip python3-venv -y
    Use a virtual environment to isolate dependencies:
 
    ```bash
-   cd src
-   python3 -m venv venv
-   source venv/bin/activate
+   python3 -m venv src/venv
+   source src/venv/bin/activate
    ```
 
 3. **Install Dependencies**
@@ -42,7 +41,8 @@ sudo apt install python3 python3-pip python3-venv -y
    Install the required Python packages from `requirements.txt`:
 
    ```bash
-   pip install -r requirements.txt
+   pip install --upgrade pip
+   pip install -r src/requirements.txt
    ```
 
    Ensure the necessary tools are installed locally in your Python environment:
@@ -56,7 +56,7 @@ sudo apt install python3 python3-pip python3-venv -y
    Test the CLI to ensure it works:
 
    ```bash
-   python shpdctl.py --help
+   python src/shpdctl.py --help
    ```
 
    You should see the list of available commands and options.
@@ -66,7 +66,7 @@ sudo apt install python3 python3-pip python3-venv -y
    You can now use the CLI:
 
    ```bash
-   python shpdctl.py <command> [options]
+   python src/shpdctl.py <command> [options]
    ```
 
 ## Lints & Checks
@@ -90,7 +90,7 @@ sudo apt install python3 python3-pip python3-venv -y
    Format your code manually:
 
    ```bash
-   black .
+   black src
    ```
 
 3. **Isort**
@@ -98,7 +98,7 @@ sudo apt install python3 python3-pip python3-venv -y
    Sort imports manually by running:
 
    ```bash
-   isort .
+   isort src
    ```
 
 4. **Pyright**
@@ -106,7 +106,7 @@ sudo apt install python3 python3-pip python3-venv -y
    Run type checking:
 
    ```bash
-   pyright
+   pyright src
    ```
 
 5. **Pytest**
@@ -114,5 +114,6 @@ sudo apt install python3 python3-pip python3-venv -y
    Run tests with coverage:
 
    ```bash
+   cd src
    pytest
    ```
