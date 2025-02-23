@@ -168,7 +168,7 @@ class TestConfigParser(unittest.TestCase):
                             "type": "nodejs",
                             "tag": "poke",
                             "registry": "",
-                            "subject_alternative_name": "DNS:poke-${ingress_ip}.${domain}",
+              "subject_alternative_name": "DNS:poke-${ingress_ip}.${domain}",
                             "ports": {
                                 "http": "3000:3000"
                             },
