@@ -73,7 +73,9 @@ def cli(
     network_host: bool,
     no_gen_certs: bool,
 ):
-    """Shepherd CLI: A tool to manage your environment, services, and database."""
+    """Shepherd CLI:
+    A tool to manage your environment, services, and database.
+    """
     pass
 
 

@@ -46,6 +46,12 @@ repos:
         args: ["--sp", "src/pyproject.toml", "--check-only"]
         files: ".*\\.py$"
 
+  - repo: https://github.com/PyCQA/flake8
+    rev: 7.1.2
+    hooks:
+      - id: flake8
+        args: ["--config", "src/.flake8"]
+
   - repo: https://github.com/RobertCraigie/pyright-python
     rev: v1.1.394
     hooks:
