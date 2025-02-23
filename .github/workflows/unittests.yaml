@@ -10,7 +10,7 @@ on:
       - main
 
 jobs:
-  tests:
+  unittests:
     runs-on: ubuntu-latest
     steps:
 
@@ -33,12 +33,12 @@ jobs:
       - name: Run Unit Tests
         run: |
           source src/venv/bin/activate
-          pytest --cov=src --cov-report=xml src/tests/
+          cd src && pytest
 
       - name: Upload Coverage Report
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./coverage.xml
+          file: ./src/coverage.xml
           flags: unittests
           name: codecov-umbrella
