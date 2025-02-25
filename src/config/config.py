@@ -21,8 +21,9 @@
 # SOFTWARE.
 
 import json
+import os
 from dataclasses import dataclass, field
-from typing import Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 
 @dataclass
@@ -253,7 +254,6 @@ def parse_config(json_str: str) -> Config:
             psw=item["psw"],
         )
 
-    # Parsing the Config instance
     return Config(
         ora=parse_oracle_config(data["ora"]),
         pg=parse_postgres_config(data["pg"]),
@@ -267,3 +267,46 @@ def parse_config(json_str: str) -> Config:
         db_default=parse_db_default(data["db_default"]),
         envs=[parse_environment(env) for env in data["envs"]],
     )
+
+
+def load_user_values(file_path: str) -> Dict[str, str]:
+    """
+    Loads a file holding the user's values in key=value format
+    into a dictionary.
+
+    Args:
+        file_path (str): Path to the user's values file.
+
+    Returns:
+        Dict[str, str]: A dictionary containing the key-value pairs
+        from the file.
+
+    Raises:
+        FileNotFoundError: If the configuration file does not exist.
+        ValueError: If the file is improperly formatted.
+    """
+    user_values: Dict[str, str] = {}
+
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(
+            f"The configuration file '{file_path}' does not exist."
+        )
+
+    try:
+        with open(file_path, "r") as file:
+            for line in file:
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+
+                if "=" in line:
+                    key, value = line.split("=", 1)
+                    user_values[key.strip()] = value.strip()
+                else:
+                    raise ValueError(
+                        f"Invalid line format in config file: '{line}'"
+                    )
+    except Exception as e:
+        raise ValueError(f"Error reading configuration file: {e}")
+
+    return user_values

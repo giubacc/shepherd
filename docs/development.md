@@ -42,7 +42,7 @@ sudo apt install python3 python3-pip python3-venv -y
 
    ```bash
    pip install --upgrade pip
-   pip install -r src/requirements.txt
+   pip install -r src/requirements.txt -r src/requirements-dev.txt
    ```
 
    Ensure the necessary tools are installed locally in your Python environment:
