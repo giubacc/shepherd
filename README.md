@@ -1,6 +1,7 @@
 # Shepherd
 
 ![Lint](https://github.com/LunaticFringers/shepherd/actions/workflows/lint.yaml/badge.svg)
+[![codecov](https://codecov.io/gh/LunaticFringers/shepherd/branch/main/graph/badge.svg)](https://codecov.io/gh/LunaticFringers/shepherd)
 
 Shepherd implements an orchestrator tool useful for provision development
 platforms using **Docker**.
