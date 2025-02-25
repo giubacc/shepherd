@@ -42,7 +42,7 @@ class Upstream:
 @dataclass
 class Database:
     type: str
-    registry: str
+    image: Optional[str]
     sys_user: str
     sys_psw: str
     user: str
@@ -54,7 +54,7 @@ class Database:
 class Service:
     type: str
     tag: str
-    registry: str
+    image: str
     ingress: Optional[bool] = None
     envvars: Optional[dict[str, str]] = field(default_factory=dict)
     ports: Optional[dict[str, str]] = field(default_factory=dict)
@@ -73,7 +73,7 @@ class Environment:
 
 @dataclass
 class OracleConfig:
-    registry: str
+    image: str
     empty_env: str
     pump_dir_name: str
     root_db_name: str
@@ -83,7 +83,7 @@ class OracleConfig:
 
 @dataclass
 class PostgresConfig:
-    registry: str
+    image: str
     empty_env: str
     net_listener_port: str
 
@@ -164,7 +164,7 @@ def parse_config(json_str: str) -> Config:
     def parse_database(item: Any) -> Database:
         return Database(
             type=item["type"],
-            registry=item["registry"],
+            image=item["image"],
             sys_user=item["sys_user"],
             sys_psw=item["sys_psw"],
             user=item["user"],
@@ -178,7 +178,7 @@ def parse_config(json_str: str) -> Config:
         return Service(
             type=item["type"],
             tag=item["tag"],
-            registry=item["registry"],
+            image=item["image"],
             ingress=item.get("ingress"),
             envvars=item.get("envvars", {}),
             ports=item.get("ports", {}),
@@ -197,7 +197,7 @@ def parse_config(json_str: str) -> Config:
 
     def parse_oracle_config(item: Any) -> OracleConfig:
         return OracleConfig(
-            registry=item["registry"],
+            image=item["image"],
             empty_env=item["empty_env"],
             pump_dir_name=item["pump_dir_name"],
             root_db_name=item["root_db_name"],
@@ -207,7 +207,7 @@ def parse_config(json_str: str) -> Config:
 
     def parse_postgres_config(item: Any) -> PostgresConfig:
         return PostgresConfig(
-            registry=item["registry"],
+            image=item["image"],
             empty_env=item["empty_env"],
             net_listener_port=item["net_listener_port"],
         )

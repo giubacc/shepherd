@@ -29,13 +29,13 @@ class TestConfigParser(unittest.TestCase):
 
     def test_parse_config(self):
         mock_data = {
-            "${ora_registry}": "OracleRegistry",
+            "${ora_image}": "OracleImage",
             "${ora_empty_env}": "empty",
             "${ora_pump_dir}": "pump_dir",
             "${ora_root_db_name}": "root_db",
             "${ora_plug_db_name}": "plug_db",
             "${ora_listener_port}": "1521",
-            "${pg_registry}": "PostgresRegistry",
+            "${pg_image}": "PostgresImage",
             "${pg_empty_env}": "empty",
             "${pg_listener_port}": "5432",
             "${shpd_registry}": "ftp.example.com",
@@ -71,7 +71,7 @@ class TestConfigParser(unittest.TestCase):
 
         json_str = """{
             "ora": {
-                "registry": "${ora_registry}",
+                "image": "${ora_image}",
                 "empty_env": "${ora_empty_env}",
                 "pump_dir_name": "${ora_pump_dir}",
                 "root_db_name": "${ora_root_db_name}",
@@ -79,7 +79,7 @@ class TestConfigParser(unittest.TestCase):
                 "net_listener_port": "${ora_listener_port}"
             },
             "pg": {
-                "registry": "${pg_registry}",
+                "image": "${pg_image}",
                 "empty_env": "${pg_empty_env}",
                 "net_listener_port": "${pg_listener_port}"
             },
@@ -125,7 +125,7 @@ class TestConfigParser(unittest.TestCase):
                     "tag": "sample-1",
                     "db": {
                         "type": "pg",
-                        "registry": "",
+                        "image": "",
                         "sys_user": "",
                         "sys_psw": "",
                         "user": "",
@@ -150,13 +150,13 @@ class TestConfigParser(unittest.TestCase):
                             "type": "traefik",
                             "ingress": true,
                             "tag": "traefik-1",
-                            "registry": "",
+                            "image": "",
                             "envvars": null
                         },
                         {
                             "type": "custom-1",
                             "tag": "primary",
-                            "registry": "",
+                            "image": "",
                             "envvars": null,
                             "ports": null,
                             "properties": {
@@ -167,7 +167,7 @@ class TestConfigParser(unittest.TestCase):
                         {
                             "type": "nodejs",
                             "tag": "poke",
-                            "registry": "",
+                            "image": "",
               "subject_alternative_name": "DNS:poke-${ingress_ip}.${domain}",
                             "ports": {
                                 "http": "3000:3000"
@@ -189,8 +189,8 @@ class TestConfigParser(unittest.TestCase):
 
         config = parse_config(json_str)
 
-        self.assertEqual(config.ora.registry, "OracleRegistry")
-        self.assertEqual(config.pg.registry, "PostgresRegistry")
+        self.assertEqual(config.ora.image, "OracleImage")
+        self.assertEqual(config.pg.image, "PostgresImage")
         self.assertEqual(config.shpd_registry.ftp_server, "ftp.example.com")
         self.assertEqual(config.envs[0].tag, "sample-1")
         self.assertEqual(config.envs[0].db.type, "pg")
