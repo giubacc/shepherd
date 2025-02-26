@@ -310,3 +310,57 @@ def load_user_values(file_path: str) -> Dict[str, str]:
         raise ValueError(f"Error reading configuration file: {e}")
 
     return user_values
+
+
+def substitute_placeholders(
+    config_data: Dict[Any, Any], values: Dict[str, str]
+) -> Dict[Any, Any]:
+    """
+    Recursively replaces placeholders in the given configuration
+    dictionary with values from the provided dictionary.
+
+    Placeholders follow the format "${key}". If a placeholder key is
+    not found in `values`, it is replaced with `None`.
+
+    :param config_data: The configuration dictionary containing placeholders.
+    :param values: A dictionary mapping placeholder keys to their values.
+    :return: A new dictionary with all placeholders replaced.
+    """
+
+    def replace(value: Any) -> Any:
+        if (
+            isinstance(value, str)
+            and value.startswith("${")
+            and value.endswith("}")
+        ):
+            key = value[2:-1]
+            return values.get(key, None)
+        elif isinstance(value, dict):
+            valDict: Dict[Any, Any] = value
+            return {k: replace(v) for k, v in valDict.items()}
+        elif isinstance(value, list):
+            valList: List[Any] = value
+            return [replace(v) for v in valList]
+        return value
+
+    return replace(config_data)
+
+
+def load_config(file_config_path: str, file_values_path: str) -> Config:
+    """
+    Loads a JSON configuration file, substitutes placeholders with
+    values from another file, and returns a parsed Config object.
+
+    :param file_config_path: Path to the JSON configuration file
+                             containing placeholders.
+    :param file_values_path: Path to the JSON file with key-value
+                             pairs for substitution.
+    :return: A Config object with resolved values.
+    """
+    with open(file_config_path, "r", encoding="utf-8") as f:
+        config_data = json.load(f)
+
+    values = load_user_values(file_values_path)
+    substituted_config = substitute_placeholders(config_data, values)
+
+    return parse_config(json.dumps(substituted_config))

@@ -20,62 +20,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
-from typing import Dict
+from unittest.mock import mock_open
 
 import pytest
+from pytest_mock import MockerFixture
 
-from config import load_user_values, parse_config
-
-
-def create_temp_config_file(file_path: str, content: str) -> None:
-    with open(file_path, "w") as file:
-        file.write(content)
+from config import Config, load_config
 
 
-def test_parse_config():
-    mock_data = {
-        "${ora_image}": "OracleImage",
-        "${ora_empty_env}": "empty",
-        "${ora_pump_dir}": "pump_dir",
-        "${ora_root_db_name}": "root_db",
-        "${ora_plug_db_name}": "plug_db",
-        "${ora_listener_port}": "1521",
-        "${pg_image}": "PostgresImage",
-        "${pg_empty_env}": "empty",
-        "${pg_listener_port}": "5432",
-        "${shpd_registry}": "ftp.example.com",
-        "${shpd_registry_ftp_usr}": "ftpuser",
-        "${shpd_registry_ftp_psw}": "ftppassword",
-        "${shpd_registry_ftp_shpd_path}": "/shpd/path",
-        "${shpd_registry_ftp_imgs_path}": "/env/imgs/path",
-        "${host_inet_ip}": "192.168.1.1",
-        "${domain}": "example.com",
-        "${dns_type}": "DNS",
-        "${ca_country}": "US",
-        "${ca_state}": "State",
-        "${ca_locality}": "Locality",
-        "${ca_org}": "Org",
-        "${ca_org_unit}": "Unit",
-        "${ca_cn}": "common.name",
-        "${ca_email}": "email@example.com",
-        "${ca_passphrase}": "passphrase",
-        "${cert_country}": "US",
-        "${cert_state}": "State",
-        "${cert_locality}": "Locality",
-        "${cert_org}": "Org",
-        "${cert_org_unit}": "Unit",
-        "${cert_cn}": "common.name",
-        "${cert_email}": "email@example.com",
-        "${env_base_dir}": "/path/to/envs",
-        "${db_sys_usr}": "sysuser",
-        "${db_sys_psw}": "syspassword",
-        "${db_usr}": "dbuser",
-        "${db_psw}": "dbpassword",
-        "${ingress_ip}": "192.168.1.2",
-    }
+def test_load_config(mocker: MockerFixture):
+    """Test regular parsing"""
 
-    json_str = """{
+    config_json = """{
         "ora": {
             "image": "${ora_image}",
             "empty_env": "${ora_empty_env}",
@@ -174,7 +130,6 @@ def test_parse_config():
                         "type": "nodejs",
                         "tag": "poke",
                         "image": "",
-  "subject_alternative_name": "DNS:poke-${ingress_ip}.${domain}",
                         "ports": {
                             "http": "3000:3000"
                         },
@@ -190,64 +145,7 @@ def test_parse_config():
         ]
     }"""
 
-    for placeholder, value in mock_data.items():
-        json_str = json_str.replace(placeholder, value)
-
-    config = parse_config(json_str)
-
-    assert config.ora.image == "OracleImage"
-    assert config.pg.image == "PostgresImage"
-    assert config.shpd_registry.ftp_server == "ftp.example.com"
-    assert config.envs[0].tag == "sample-1"
-    assert config.envs[0].db.type == "pg"
-    assert config.db_default.sys_user == "sysuser"
-    assert config.envs[0].services[0].type == "traefik"
-    assert (
-        config.envs[0].services[2].subject_alternative_name
-        == "DNS:poke-192.168.1.2.example.com"
-    )
-
-
-def test_load_user_values_file_not_found() -> None:
-    """Test handling of a non-existent file."""
-    file_path = "non_existent_config.properties"
-    with pytest.raises(FileNotFoundError):
-        load_user_values(file_path)
-
-
-def test_load_user_values_invalid_format() -> None:
-    """Test handling of an improperly formatted file."""
-    file_path = "invalid_config.properties"
-    config_content = """
-    key1=value1
-    key2
-    key3=value3
-    """
-    create_temp_config_file(file_path, config_content)
-
-    with pytest.raises(ValueError):
-        load_user_values(file_path)
-
-    os.remove(file_path)
-
-
-def test_load_user_values_empty_file() -> None:
-    """Test handling of an empty file."""
-    file_path = "empty_config.properties"
-    config_content = ""
-    create_temp_config_file(file_path, config_content)
-
-    expected: Dict[str, str] = {}
-    result = load_user_values(file_path)
-    assert result == expected, "Failed to handle empty configuration file."
-
-    os.remove(file_path)
-
-
-def test_load_user_values_full_config() -> None:
-    """Test loading a full configuration file with all key-value pairs."""
-    file_path = "full_config.properties"
-    config_content = """
+    values = """
     # Oracle (ora) Configuration
     ora_image=ghcr.io/lunaticfringers/shepherd/oracle:19.3.0.0_TZ40
     ora_empty_env=fresh-ora-19300
@@ -262,7 +160,7 @@ def test_load_user_values_full_config() -> None:
     pg_listener_port=5432
 
     # SHPD Registry Configuration
-    shpd_registry=
+    shpd_registry=ftp.example.com
     shpd_registry_ftp_usr=
     shpd_registry_ftp_psw=
     shpd_registry_ftp_shpd_path=shpd
@@ -302,49 +200,89 @@ def test_load_user_values_full_config() -> None:
     db_usr=docker
     db_psw=docker
     """
-    create_temp_config_file(file_path, config_content)
 
-    expected: Dict[str, str] = {
-        "ora_image": "ghcr.io/lunaticfringers/shepherd/oracle:19.3.0.0_TZ40",
-        "ora_empty_env": "fresh-ora-19300",
-        "ora_pump_dir": "PUMP_DIR",
-        "ora_root_db_name": "ORCLCDB",
-        "ora_plug_db_name": "ORCLPDB1",
-        "ora_listener_port": "1521",
-        "pg_image": "ghcr.io/lunaticfringers/shepherd/postgres:17-3.5",
-        "pg_empty_env": "fresh-pg-1735",
-        "pg_listener_port": "5432",
-        "shpd_registry": "",
-        "shpd_registry_ftp_usr": "",
-        "shpd_registry_ftp_psw": "",
-        "shpd_registry_ftp_shpd_path": "shpd",
-        "shpd_registry_ftp_imgs_path": "imgs",
-        "host_inet_ip": "127.0.0.1",
-        "domain": "sslip.io",
-        "dns_type": "autoresolving",
-        "ca_country": "IT",
-        "ca_state": "MS",
-        "ca_locality": "Carrara",
-        "ca_org": "LunaticFringe",
-        "ca_org_unit": "Development",
-        "ca_cn": "sslip.io",
-        "ca_email": "lf@sslip.io",
-        "ca_passphrase": "test",
-        "cert_country": "IT",
-        "cert_state": "MS",
-        "cert_locality": "Carrara",
-        "cert_org": "LunaticFringe",
-        "cert_org_unit": "Development",
-        "cert_cn": "sslip.io",
-        "cert_email": "lf@sslip.io",
-        "cert_subject_alternative_names": "",
-        "env_base_dir": "~/shpdenvs",
-        "db_sys_usr": "sys",
-        "db_sys_psw": "sys",
-        "db_usr": "docker",
-        "db_psw": "docker",
-    }
-    result = load_user_values(file_path)
-    assert result == expected, "Failed to load full configuration file."
+    mock_open1 = mock_open(read_data=config_json)
+    mock_open2 = mock_open(read_data=values)
 
-    os.remove(file_path)
+    mocker.patch("os.path.exists", return_value=True)
+    mocker.patch(
+        "builtins.open",
+        side_effect=[mock_open1.return_value, mock_open2.return_value],
+    )
+
+    config: Config = load_config("mock.1", "mock.2")
+
+    assert (
+        config.ora.image
+        == "ghcr.io/lunaticfringers/shepherd/oracle:19.3.0.0_TZ40"
+    )
+    assert config.pg.image == "ghcr.io/lunaticfringers/shepherd/postgres:17-3.5"
+    assert config.shpd_registry.ftp_server == "ftp.example.com"
+    assert config.envs[0].tag == "sample-1"
+    assert config.envs[0].db.type == "pg"
+    assert config.db_default.sys_user == "sys"
+    assert config.envs[0].services[0].type == "traefik"
+    assert config.envs[0].services[0].ingress is True
+    assert config.envs[0].services[1].type == "custom-1"
+    assert config.envs[0].services[1].tag == "primary"
+    assert config.envs[0].services[2].type == "nodejs"
+    assert config.envs[0].services[2].tag == "poke"
+    envvars = config.envs[0].services[2].envvars
+    assert envvars and envvars.get("USER") == "user"
+    assert envvars and envvars.get("PSW") == "psw"
+    ports = config.envs[0].services[2].ports
+    assert ports and ports["http"] == "3000:3000"
+    assert config.host_inet_ip == "127.0.0.1"
+    assert config.domain == "sslip.io"
+    assert config.dns_type == "autoresolving"
+    assert config.ca.country == "IT"
+    assert config.ca.state == "MS"
+    assert config.ca.locality == "Carrara"
+    assert config.ca.organization == "LunaticFringe"
+    assert config.ca.organizational_unit == "Development"
+    assert config.ca.common_name == "sslip.io"
+    assert config.ca.email == "lf@sslip.io"
+    assert config.ca.passphrase == "test"
+    assert config.cert.country == "IT"
+    assert config.cert.state == "MS"
+    assert config.cert.locality == "Carrara"
+    assert config.cert.organization == "LunaticFringe"
+    assert config.cert.organizational_unit == "Development"
+    assert config.cert.common_name == "sslip.io"
+    assert config.cert.email == "lf@sslip.io"
+    assert config.cert.subject_alternative_names == []
+    assert config.envs_dir == "~/shpdenvs"
+    assert config.db_default.sys_psw == "sys"
+    assert config.db_default.user == "docker"
+    assert config.db_default.psw == "docker"
+    assert config.envs[0].archived is False
+    assert config.envs[0].active is False
+
+
+def test_load_user_values_file_not_found(mocker: MockerFixture) -> None:
+    """Test file_values_path does not exist"""
+
+    mock_open1 = mock_open(read_data="{}")
+    mocker.patch(
+        "builtins.open",
+        side_effect=[mock_open1.return_value, OSError("File not found")],
+    )
+
+    with pytest.raises(FileNotFoundError):
+        load_config("mock.1", "not-exist")
+
+
+def test_load_invalid_user_values(mocker: MockerFixture) -> None:
+    """Test invalid user values"""
+
+    mock_open1 = mock_open(read_data="{}")
+    mock_open2 = mock_open(read_data="key")
+
+    mocker.patch("os.path.exists", return_value=True)
+    mocker.patch(
+        "builtins.open",
+        side_effect=[mock_open1.return_value, mock_open2.return_value],
+    )
+
+    with pytest.raises(ValueError):
+        load_config("mock.1", "mock.2")

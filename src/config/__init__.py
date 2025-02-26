@@ -32,8 +32,7 @@ from .config import (
     Service,
     ShpdRegistry,
     Upstream,
-    load_user_values,
-    parse_config,
+    load_config,
 )
 
 __all__ = [
@@ -48,6 +47,5 @@ __all__ = [
     "Service",
     "ShpdRegistry",
     "Upstream",
-    "parse_config",
-    "load_user_values",
+    "load_config",
 ]
