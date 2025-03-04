@@ -1,0 +1,60 @@
+name: Release shpdctl
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version of the release'
+        required: false
+        default: '0.0.0'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m venv src/venv
+          source src/venv/bin/activate
+          pip install --upgrade pip
+          pip install -r src/requirements.txt -r src/requirements-dev.txt
+
+      - name: Run Build Script
+        run: python src/build.py
+
+      - name: Create tar.gz archive
+        run: tar -czvf shpdctl.tar.gz -C dist .
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: shpdctl_${{ github.ref_name || github.event.inputs.version }}
+          path: shpdctl.tar.gz
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name || github.event.inputs.version }}
+          name: Release ${{ github.ref_name || github.event.inputs.version }}
+          body: |
+            Automatically generated release for ${{ github.ref_name || github.event.inputs.version }}.
+          draft: true
+          prerelease: true
+          files: dist/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
