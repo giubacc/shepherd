@@ -1,17 +1,11 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
-
-# Compiled output
-*/**/dist
+dist
 */**/tmp
 */**/out-tsc
 */**/bazel-out
-
-# Node
 */**/node_modules
 */**/npm-debug.log
 */**/yarn-error.log
-
-# IDEs and editors
 .idea/
 .project
 .classpath
@@ -20,23 +14,18 @@
 *.launch
 .settings/
 *.sublime-workspace
-
-# Visual Studio Code
 .vscode/*
 .history/*
-
-# System files
 .DS_Store
 Thumbs.db
-
 .devcontainer
 venv
+.venv
 __pycache__
 .coverage
 coverage.xml
 .pytest_cache
 htmlcov/
-
 oradata
 *.dmp
 *.log
@@ -45,3 +34,5 @@ oradata
 test.sh
 convert.sh
 wiki
+shpdctl.spec
+build

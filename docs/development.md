@@ -117,3 +117,57 @@ sudo apt install python3 python3-pip python3-venv -y
    cd src
    pytest
    ```
+
+## PyInstaller Build Automation Script
+
+The `src/build.py` script automates the process of building `shdpctl`
+application using PyInstaller, managing versioning,
+Git tagging, and resource management.
+
+The script manages the build process for `shdpctl` by:
+
+1. Cleaning previous build files.
+2. Reading the version from `src/version`.
+3. Building `shdpctl` with PyInstaller.
+4. Copying necessary resources.
+5. Optionally creating and pushing Git tags for versioning
+   (still experimental).
+
+You can run the script with various command-line arguments:
+
+```bash
+python src/build.py [options]
+```
+
+### Options
+
+- `--clean`: Clean previous builds (removes `build`, `dist`, and `.spec` files).
+- `--debug`: Enable debug logs for the PyInstaller build.
+- `--git`: Enable Git tagging.
+- `--version`: Show the application version.
+
+### Usage
+
+1. **Clean previous builds:**
+
+    ```bash
+    python3 src/build.py --clean
+    ```
+
+2. **Build with debug logs:**
+
+    ```bash
+    python3 src/build.py --debug
+    ```
+
+3. **Enable Git tagging:**
+
+    ```bash
+    python3 src/build.py --git
+    ```
+
+4. **Show application version:**
+
+    ```bash
+    python3 src/build.py --version
+    ```
