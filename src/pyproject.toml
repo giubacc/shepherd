@@ -24,8 +24,8 @@ extend_skip_glob = ["resources/*"]
 
 [tool.pyright]
 typeCheckingMode = "strict"
-venvPath = "."
-venv = "venv"
+venvPath = ".."
+venv = ".venv"
 
 [tool.pytest.ini_options]
 pythonpath = ["."]

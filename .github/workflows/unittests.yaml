@@ -24,15 +24,15 @@ jobs:
 
       - name: Create and activate virtual environment in src
         run: |
-          python -m venv src/venv
-          source src/venv/bin/activate
+          python3 -m venv .venv
+          source .venv/bin/activate
           pip install --upgrade pip
           pip install -r src/requirements.txt -r src/requirements-dev.txt
-          pip install pytest pytest-cov  # Ensure pytest and coverage are installed
+          pip install pytest pytest-cov
 
       - name: Run Unit Tests
         run: |
-          source src/venv/bin/activate
+          source .venv/bin/activate
           cd src && pytest
 
       - name: Upload Coverage Report
