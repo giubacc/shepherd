@@ -1,0 +1,56 @@
+name: Build shpdctl
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - closed
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python3 -m venv .venv
+          source .venv/bin/activate
+          pip install --upgrade pip
+          pip install -r src/requirements.txt -r src/requirements-dev.txt
+
+      - name: Run Build Script
+        run: |
+          source .venv/bin/activate
+          python3 src/build.py
+
+      - name: Create tar.gz archive
+        env:
+          VERSION: "0.0.0"
+        run: tar -czvf shpdctl-$VERSION.tar.gz -C dist .
+
+  upload:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Upload 0.0.0 Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: shpdctl_0.0.0
+          path: shpdctl-0.0.0.tar.gz
+          retention-days: 7
