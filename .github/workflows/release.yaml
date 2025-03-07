@@ -12,7 +12,7 @@ on:
         default: '0.0.0'
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
 
     permissions:
@@ -39,18 +39,26 @@ jobs:
           source .venv/bin/activate
           python3 src/build.py
 
-      - name: Create tar.gz archive
-        env:
-          VERSION: ${{ github.ref_name || github.event.inputs.version }}
+      - name: Set Version
+        id: version
         run: |
-          tar -czvf shpdctl-$VERSION.tar.gz -C dist .
-          cp shpdctl-$VERSION.tar.gz shpdctl-latest.tar.gz
+          if [ "${{ github.event_name }}" == "push" ]; then
+            VERSION="${{ github.ref_name }}"
+          else
+            VERSION="${{ github.event.inputs.version }}"
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Create tar.gz archive
+        run: |
+          tar -czvf shpdctl-${{ env.VERSION }}.tar.gz -C dist .
+          cp shpdctl-${{ env.VERSION }}.tar.gz shpdctl-latest.tar.gz
 
       - name: Upload Artifact (Versioned)
         uses: actions/upload-artifact@v4
         with:
-          name: shpdctl_${{ github.ref_name || github.event.inputs.version }}
-          path: shpdctl-${{ github.ref_name || github.event.inputs.version }}.tar.gz
+          name: shpdctl_${{ env.VERSION }}
+          path: shpdctl-${{ env.VERSION }}.tar.gz
 
       - name: Upload Artifact (Latest)
         uses: actions/upload-artifact@v4
@@ -61,13 +69,14 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name || github.event.inputs.version }}
-          name: Release ${{ github.ref_name || github.event.inputs.version }}
+          tag_name: ${{ env.VERSION }}
+          name: Release ${{ env.VERSION }}
           body: |
-            Automatically generated release for ${{ github.ref_name || github.event.inputs.version }}.
+            Automatically generated release for ${{ env.VERSION }}.
           draft: true
           prerelease: true
           files: |
-            shpdctl-${{ github.ref_name || github.event.inputs.version }}.tar.gz
+            shpdctl-${{ env.VERSION }}.tar.gz
+            shpdctl-latest.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
