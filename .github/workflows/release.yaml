@@ -9,7 +9,7 @@ on:
       version:
         description: 'Version of the release'
         required: false
-        default: '0.0.0'
+        default: 'v0.0.0'
 
 jobs:
   release:
@@ -47,36 +47,30 @@ jobs:
           else
             VERSION="${{ github.event.inputs.version }}"
           fi
+          VERSION="${VERSION#v}"
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Create tar.gz archive
         run: |
           tar -czvf shpdctl-${{ env.VERSION }}.tar.gz -C dist .
-          cp shpdctl-${{ env.VERSION }}.tar.gz shpdctl-latest.tar.gz
+          cp shpdctl-${{ env.VERSION }}.tar.gz
 
       - name: Upload Artifact (Versioned)
         uses: actions/upload-artifact@v4
         with:
-          name: shpdctl_${{ env.VERSION }}
+          name: shpdctl-${{ env.VERSION }}
           path: shpdctl-${{ env.VERSION }}.tar.gz
-
-      - name: Upload Artifact (Latest)
-        uses: actions/upload-artifact@v4
-        with:
-          name: shpdctl_latest
-          path: shpdctl-latest.tar.gz
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ env.VERSION }}
-          name: Release ${{ env.VERSION }}
+          tag_name: v${{ env.VERSION }}
+          name: Release v${{ env.VERSION }}
           body: |
-            Automatically generated release for ${{ env.VERSION }}.
+            Automatically generated release for v${{ env.VERSION }}.
           draft: true
           prerelease: true
           files: |
             shpdctl-${{ env.VERSION }}.tar.gz
-            shpdctl-latest.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
