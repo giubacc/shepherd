@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 
-class Database:
+class DatabaseMng:
     def build_dbms_image(self) -> None:
         """Stub for building DBMS image."""
         pass

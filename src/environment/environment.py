@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 
-class Environment:
+class EnvironmentMng:
     def init_environment(self, db_type: str, env_tag: str) -> None:
         """Stub for initializing an environment."""
         pass
